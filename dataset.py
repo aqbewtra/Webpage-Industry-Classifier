@@ -31,13 +31,20 @@ class HTML_Dataset(Dataset):
 
 if __name__ == "__main__":
     dataset_root = 'html_clean'
-    img_dir = dataset_root + 'image-chips/'
     label_dir = dataset_root + 'label-chips/'
     dataset = HTML_Dataset(dataset_root, label_dir, scale=1)
     
-    img, label = dataset[0]
+    text, label = dataset[0]
 
-    print(img, label)
+    # print(text, label)
+
+    from transformers import BertTokenizer
+
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+    encoding = tokenizer.encode_plus(text, return_tensors = "pt")
+
+    print(encoding)
 
     # f, axarr = plt.subplots(2,1)
     # axarr[0].imshow(transforms.ToPILImage()(img.to(dtype=torch.float32)).convert('RGB'))
