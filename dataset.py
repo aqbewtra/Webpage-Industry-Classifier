@@ -23,10 +23,12 @@ class HTML_Dataset(Dataset):
     def __getitem__(self, index):
         file_path = self.path_dict[index]
 
+        # label = self.labels[file_path]
+        # CONVERT LABEL TO INT/ONEHOT ---> Tokenize???
+
         with open(file_path, "r", encoding="utf-8") as f:
                 text = f.read()
 
-        ## CONVERT LABEL TO INT/ONEHOT
         return BeautifulSoup(text, 'lxml').get_text(), "label"
 
 if __name__ == "__main__":
@@ -36,7 +38,7 @@ if __name__ == "__main__":
     
     text, label = dataset[0]
 
-    # print(text, label)
+    print(text, label)
 
     from transformers import BertTokenizer
 
@@ -44,9 +46,14 @@ if __name__ == "__main__":
 
     encoding = tokenizer.encode_plus(text, return_tensors = "pt")
 
-    print(encoding)
+    from transformers import BertForSequenceClassification
+    num_classes = 10
 
-    # f, axarr = plt.subplots(2,1)
-    # axarr[0].imshow(transforms.ToPILImage()(img.to(dtype=torch.float32)).convert('RGB'))
-    # axarr[1].imshow(transforms.ToPILImage()(label.to(dtype=torch.float32)).convert('RGB'))
-    # plt.show()
+    model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=num_classes)
+
+    output = model(**encoding)
+
+
+
+
+    print(output)
